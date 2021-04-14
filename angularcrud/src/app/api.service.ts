@@ -6,12 +6,17 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ApiService {
+  baseurl:any;
+  httpHeaders:any;
 
-  baseurl = "http://localhost:8000";
-  httpHeaders = new HttpHeaders({'Content-Type': 'application/json'});
+  constructor(private http: HttpClient) { 
+    this.baseurl = "http://localhost:8000";
+    this.httpHeaders = new HttpHeaders({'Content-Type': 'application/json'});
+  }
 
-  constructor(private http: HttpClient) { }
-
+  storeToken(token:any) {
+    this.httpHeaders = this.httpHeaders.set('Authorization', 'Bearer ' + token);
+  }
   getAllMovies(): Observable<any>{
     return this.http.get(this.baseurl + '/movies/', {'headers': this.httpHeaders});
   }

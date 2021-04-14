@@ -1,18 +1,42 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ApiService } from './api.service';
+import { UserService } from './user.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   movies = [{'id': -1, 'title': '', 'desc': '', 'year': ''}];
   selected = {'id': -1, 'title': '', 'desc': '', 'year': ''};
   index = -1;
+  user:any;
 
-  constructor(private api: ApiService) {
-    this.getMovies();
+  constructor(private api: ApiService, public _userService: UserService) {
+  }
+
+  ngOnInit() {
+    this.user = {
+      username: '',
+      password: ''
+    };
+  }
+ 
+  login() {
+    let callback = () => {
+      this.api.storeToken(this._userService.token);
+      this.getMovies();
+    }
+    this._userService.login({'username': this.user.username, 'password': this.user.password}, callback);
+  }
+ 
+  refreshToken() {
+    this._userService.refreshToken();
+  }
+ 
+  logout() {
+    this._userService.logout();
   }
 
   getMovies = () => {
