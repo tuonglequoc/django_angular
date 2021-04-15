@@ -33,28 +33,13 @@ export class UserService {
   }
 
   // Uses http.post() to get an auth token from djangorestframework-jwt endpoint
-  public login(user:any, callback:Function) {
-    this.http.post(this.baseurl + '/api/token/', JSON.stringify(user), this.httpOptions).subscribe(
-      (data: any) => {
-        this.updateData(data);
-        callback();
-      },
-      err => {
-        this.errors = err['error'];
-      }
-    );
+  public login(user:any) {
+    return this.http.post(this.baseurl + '/api/token/', JSON.stringify(user), this.httpOptions);
   }
 
   // Refreshes the JWT token, to extend the time the user is logged in
   public refreshToken() {
-    this.http.post(this.baseurl + '/api/token/refresh/', JSON.stringify({refresh: this.refresh}), this.httpOptions).subscribe(
-      (data:any) => {
-        this.updateData(data);
-      },
-      err => {
-        this.errors = err['error'];
-      }
-    );
+    return this.http.post(this.baseurl + '/api/token/refresh/', JSON.stringify({refresh: this.refresh}), this.httpOptions);
   }
 
   public logout() {
@@ -63,7 +48,7 @@ export class UserService {
     this.username = null;
   }
 
-  private updateData(token:any) {
+  public updateData(token:any) {
     this.token = token['access'];
     this.refresh = token['refresh'] ? token['refresh'] : this.refresh;
     this.errors = [];

@@ -24,15 +24,29 @@ export class AppComponent implements OnInit {
   }
  
   login() {
-    let callback = () => {
-      this.api.storeToken(this._userService.token);
-      this.getMovies();
-    }
-    this._userService.login({'username': this.user.username, 'password': this.user.password}, callback);
+    this._userService.login({'username': this.user.username, 'password': this.user.password}).subscribe(
+      (data:any) => {
+        this._userService.updateData(data);
+        this.api.storeToken(this._userService.token);
+        this.getMovies();
+      },
+      (error:any) => {
+        console.log(error)
+      }
+    );
   }
  
   refreshToken() {
-    this._userService.refreshToken();
+    this._userService.refreshToken().subscribe(
+      (data:any) => {
+        this._userService.updateData(data);
+        this.api.storeToken(this._userService.token);
+        this.getMovies();
+      },
+      (error:any) => {
+        console.log(error)
+      }
+    );
   }
  
   logout() {
